@@ -50,6 +50,7 @@ html.customx-editing, html.customx-editing * { cursor: crosshair !important; }
 .customx-toolbar button:hover { background: #585b70; }
 .customx-toolbar button.primary { background: #6c5ce7; }
 .customx-toolbar button.primary:hover { background: #7d6ff0; }
+.customx-toolbar button.reset { color: #f9e2af; }
 .customx-recorder {
   position: fixed; top: 16px; left: 16px; z-index: 2147483642;
   display: flex; align-items: center; gap: 9px;
@@ -144,5 +145,42 @@ html.customx-editing, html.customx-editing * { cursor: crosshair !important; }
   font-size: 12px; cursor: pointer; font-family: inherit;
 }
 .customx-layer .new-sc:hover { border-color: #89b4fa; }
-.customx-moving { outline: 2px dashed #6c5ce7 !important; }
+.customx-moving {
+  outline: 2px dashed #6c5ce7 !important;
+  outline-offset: 2px;
+  cursor: grabbing !important;
+}
+html.customx-drag-anywhere body * { cursor: grab !important; }
+html.customx-drag-anywhere body .customx-moving { cursor: grabbing !important; }
+.customx-drag-badge {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+  z-index: 2147483646; padding: 7px 8px 7px 14px;
+  display: flex; align-items: center; gap: 10px;
+  background: #6c5ce7f2; backdrop-filter: blur(6px);
+  border: 1px solid #7d6ff0; border-radius: 999px;
+  color: #fff; font-family: system-ui, sans-serif; font-size: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none;
+  user-select: none; white-space: nowrap;
+}
+.customx-drag-badge button.reset-moves {
+  background: #11111bcc; color: #f38ba8; border: 1px solid #45475a;
+  border-radius: 999px; padding: 4px 11px; font-size: 11px; font-weight: 700;
+  cursor: pointer; font-family: inherit; pointer-events: auto;
+}
+.customx-drag-badge button.reset-moves:hover { background: #45475a; color: #ffb3bd; }
+.customx-layer button.reset-moves { color: #f38ba8; }
+.customx-layer button.reset-moves:hover { border-color: #f38ba8; }
+.customx-move-hint {
+  left: 50%; top: 16px; transform: translateX(-50%);
+  min-width: 0; max-width: none; padding: 8px 14px; font-size: 12px;
+  pointer-events: none;
+}
+.customx-toast {
+  position: fixed; left: 50%; top: 16px; transform: translateX(-50%);
+  z-index: 2147483646; padding: 9px 14px;
+  background: #1e1e2ef2; backdrop-filter: blur(6px);
+  border: 1px solid #45475a; border-radius: 10px;
+  color: #cdd6f4; font-family: system-ui, sans-serif; font-size: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.5); pointer-events: none;
+}
 `

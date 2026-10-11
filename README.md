@@ -6,9 +6,11 @@ Everything is configured **per site** and stored locally via `chrome.storage.syn
 
 ## Features
 
-- **Edit layout** — enter edit mode, hover to highlight, then **hide** or **move** (drag to reposition) any element. Rules are re-applied automatically, even after the page re-renders.
+- **Move anything, anywhere** — enter edit mode, hover to highlight an element, then drag it wherever you want. Grab-offset is preserved, **Ctrl** snaps to an 8px grid, **arrow keys** nudge (Shift = 10px), **Enter** drops and **Esc** cancels. Edit mode re-opens after each drop so you can keep moving other elements, and **Reset** removes the rules for the selected element.
+- **Hide clutter** — one click hides any element. Rules are re-applied automatically, even after the page re-renders.
 - **Record shortcuts (macros)** — capture clicks, text input and key presses, then replay them with one click. A recording can span page navigations; progress is checkpointed and resumed on the next page.
 - **Clones** — turn a button on another page of the same site into a one-click action that navigates there and clicks it for you.
+- **Drag anywhere mode** — flip it on from the CustomX panel or popup, then drag *any* element straight to a new spot and release to save it (Ctrl snaps, Esc cancels). No edit mode required. A **Reset all** button in the mode badge (and the panel) restores every moved element to its original position.
 - **Dark mode** — apply a local, client-side dark theme to the current site (images and media keep their true colors). Toggle it from the on-page panel or the popup.
 - **PIN lock** — the extension is gated behind a PIN you set on first use and unlock once per browser session.
 
@@ -56,6 +58,8 @@ src/
     recorder.ts               Interaction capture + shortcut saving
     replay.ts                 Step-by-step replay (navigation-resilient)
     rules.ts                  Layout rule engine (hide/move persistence)
+    move.ts                   Shared drag-anywhere core (preview, snap, nudge)
+    drag-anywhere.ts          Global "drag any element" mode
     selectors.ts              Stable CSS/XPath selector generation + lookup
     shortcuts-layer.ts        Floating handle + shortcuts/clones panel
     dark-mode.ts              Local per-site dark theme

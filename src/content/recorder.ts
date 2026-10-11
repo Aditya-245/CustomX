@@ -17,6 +17,11 @@ function isEditable(target: EventTarget | null): target is HTMLElement {
   return target instanceof Element && !!target.closest(EDITABLE)
 }
 
+/** True while a recording session is capturing interactions. */
+export function isRecordingActive(): boolean {
+  return captureAttached
+}
+
 /** Called on every page load: if a recording is in progress, resume capturing + show the dot. */
 export async function resumeRecording(): Promise<void> {
   const rec = await getRecording()

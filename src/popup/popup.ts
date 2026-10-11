@@ -3,6 +3,7 @@ interface StateMsg {
   enabled: boolean
   editMode: boolean
   darkMode: boolean
+  dragAnywhere: boolean
   rules: Array<{ id: string; action: string; selector: string }>
   shortcuts: Array<{ id: string; name: string }>
   clones: Array<{ id: string; name: string }>
@@ -12,6 +13,7 @@ const $ = <T extends HTMLElement>(id: string): T | null => document.getElementBy
 
 let tabId: number | null = null
 let darkBtn: HTMLButtonElement | null = null
+let dragBtn: HTMLButtonElement | null = null
 
 async function send<T = unknown>(message: Record<string, unknown>): Promise<T | null> {
   if (tabId == null) return null
@@ -27,6 +29,7 @@ async function refresh(): Promise<void> {
   const originEl = $('origin')
   if (originEl) originEl.textContent = state ? state.origin : 'CustomX is not available on this page.'
   if (darkBtn) darkBtn.textContent = `Dark mode: ${state?.darkMode ? 'On' : 'Off'}`
+  if (dragBtn) dragBtn.textContent = `Drag anywhere: ${state?.dragAnywhere ? 'On' : 'Off'}`
 }
 
 async function init(): Promise<void> {
@@ -64,6 +67,15 @@ async function init(): Promise<void> {
     if (darkBtn) darkBtn.textContent = `Dark mode: ${next ? 'On' : 'Off'}`
   })
 
+  dragBtn = document.createElement('button')
+  dragBtn.textContent = 'Drag anywhere: …'
+  dragBtn.addEventListener('click', async () => {
+    const state = await send<StateMsg>({ type: 'CUSTOMX_GET_STATE' })
+    const next = !state?.dragAnywhere
+    await send({ type: 'CUSTOMX_SET_DRAG', enabled: next })
+    if (dragBtn) dragBtn.textContent = `Drag anywhere: ${next ? 'On' : 'Off'}`
+  })
+
   const editBtn = document.createElement('button')
   editBtn.textContent = 'Edit layout'
   editBtn.addEventListener('click', async () => {
@@ -71,7 +83,7 @@ async function init(): Promise<void> {
     setTimeout(() => window.close(), 150)
   })
 
-  main.append(recordBtn, darkBtn, editBtn)
+  main.append(recordBtn, darkBtn, dragBtn, editBtn)
   void refresh()
 }
 

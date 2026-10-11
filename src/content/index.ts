@@ -2,6 +2,7 @@ import { getSiteConfig, saveSiteConfig } from '../shared/storage'
 import type { Clone } from '../shared/types'
 import { requireAuth } from './auth-gate'
 import { initDarkMode, setDarkMode } from './dark-mode'
+import { initDragAnywhere, setDragAnywhere } from './drag-anywhere'
 import { EditMode } from './edit-mode'
 import { continueReplay, runReplay } from './replay'
 import { resumeRecording, startRecording } from './recorder'
@@ -28,6 +29,7 @@ async function startFeatures(): Promise<void> {
     void engine.init()
     void renderShortcutsLayer()
     void initDarkMode()
+    void initDragAnywhere()
     void resumeRecording()
     // Resume a replay or a cross-page clone that was interrupted by navigation.
     setTimeout(() => void continueReplay(), 800)
@@ -56,6 +58,7 @@ async function startFeatures(): Promise<void> {
           enabled: cfg.enabled,
           editMode: editMode.isActive(),
           darkMode: Boolean(cfg.uiStyle?.darkMode),
+          dragAnywhere: Boolean(cfg.uiStyle?.dragAnywhere),
           rules: cfg.rules.map((r) => ({ id: r.id, action: r.action, selector: r.selector })),
           shortcuts: cfg.shortcuts.map((s) => ({ id: s.id, name: s.name })),
           clones: cfg.clones.map((c) => ({ id: c.id, name: c.name }))
@@ -68,6 +71,11 @@ async function startFeatures(): Promise<void> {
         const enabled = Boolean(msg.enabled)
         await setDarkMode(enabled)
         return { ok: true, darkMode: enabled }
+      }
+      case 'CUSTOMX_SET_DRAG': {
+        const enabled = Boolean(msg.enabled)
+        await setDragAnywhere(enabled)
+        return { ok: true, dragAnywhere: enabled }
       }
       case 'CUSTOMX_START_RECORDING':
         await startRecording()

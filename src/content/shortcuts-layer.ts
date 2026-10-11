@@ -1,6 +1,7 @@
 import { getPendingClone, getSiteConfig, saveSiteConfig, setPendingClone } from '../shared/storage'
 import type { Clone, Position } from '../shared/types'
 import { setDarkMode } from './dark-mode'
+import { resetAllMoves, setDragAnywhere } from './drag-anywhere'
 import { runReplay } from './replay'
 import { startRecording } from './recorder'
 import { waitForSelector } from './selectors'
@@ -30,6 +31,7 @@ export async function renderShortcutsLayer(): Promise<void> {
   let shortcuts = config.shortcuts
   let clones = config.clones
   let darkOn = Boolean(config.uiStyle?.darkMode)
+  let dragOn = Boolean(config.uiStyle?.dragAnywhere)
 
   // Search state
   let searchQuery = ''
@@ -130,6 +132,22 @@ export async function renderShortcutsLayer(): Promise<void> {
         darkBtn.textContent = `Dark mode: ${darkOn ? 'On' : 'Off'}`
       })
       body.append(darkBtn)
+
+      const dragBtn = h('button', { class: 'new-sc' }, `Drag anywhere: ${dragOn ? 'On' : 'Off'}`)
+      dragBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        dragOn = !dragOn
+        void setDragAnywhere(dragOn)
+        dragBtn.textContent = `Drag anywhere: ${dragOn ? 'On' : 'Off'}`
+      })
+      body.append(dragBtn)
+
+      const resetBtn = h('button', { class: 'new-sc reset-moves' }, 'Reset all positions')
+      resetBtn.addEventListener('click', (e) => {
+        e.stopPropagation()
+        void resetAllMoves()
+      })
+      body.append(resetBtn)
     }
     renderBody()
     panel.append(h('div', { class: 'header' }, h('span', {}, 'SHORTCUTS')), body)

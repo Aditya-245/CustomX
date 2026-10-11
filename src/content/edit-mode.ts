@@ -1,4 +1,5 @@
-import { RuleEngine, pinAt } from './rules'
+import { beginDrag, toast } from './move'
+import { RuleEngine } from './rules'
 import { getSelectorInfo } from './selectors'
 import { h, mountRoot } from './ui'
 
@@ -57,15 +58,27 @@ export class EditMode {
   private buildToolbar(): HTMLElement {
     const moveBtn = h('button', { class: 'primary' }, 'Move')
     const hideBtn = h('button', {}, 'Hide')
+    const resetBtn = h('button', { class: 'reset' }, 'Reset')
     const exitBtn = h('button', {}, 'Exit edit mode')
-    const bar = h('div', { class: 'customx-toolbar' }, moveBtn, hideBtn, exitBtn)
+    const bar = h('div', { class: 'customx-toolbar' }, moveBtn, hideBtn, resetBtn, exitBtn)
     moveBtn.addEventListener('click', (e) => {
       e.stopImmediatePropagation()
       const target = this.selected
       if (target) {
         this.exit()
-        void startMove(target)
+        // Re-open edit mode after a drop so the user can keep moving other elements.
+        beginDrag(target, undefined, { onDone: () => this.enter() })
       }
+    })
+    resetBtn.addEventListener('click', async (e) => {
+      e.stopImmediatePropagation()
+      const target = this.selected
+      if (!target) return
+      const { css, xpath } = getSelectorInfo(target)
+      const selectors = [css, xpath].filter((s): s is string => Boolean(s))
+      const count = await RuleEngine.removeForSelectors(selectors)
+      this.hideToolbar()
+      toast(count > 0 ? `CustomX: reset ${count} rule${count > 1 ? 's' : ''}.` : 'CustomX: nothing to reset.')
     })
     hideBtn.addEventListener('click', async (e) => {
       e.stopImmediatePropagation()
@@ -213,45 +226,4 @@ export function pickElement(): Promise<HTMLElement | null> {
   })
 }
 
-/** Move flow: element follows the cursor pinned under it; next click drops + persists. */
-export function startMove(el: HTMLElement): void {
-  const rect = el.getBoundingClientRect()
-  let docX = rect.left + window.scrollX
-  let docY = rect.top + window.scrollY
 
-  pinAt(el, docX, docY)
-  el.classList.add('customx-moving')
-
-  const onMove = (e: MouseEvent): void => {
-    docX = e.clientX + window.scrollX
-    docY = e.clientY + window.scrollY
-    pinAt(el, docX, docY)
-  }
-  const onDrop = async (e: MouseEvent): Promise<void> => {
-    e.preventDefault()
-    e.stopPropagation()
-    cleanup()
-    el.classList.remove('customx-moving')
-    const { css, xpath } = getSelectorInfo(el)
-    if (!css) {
-      alert('CustomX: could not generate a stable selector for this element.')
-      return
-    }
-    await RuleEngine.addOrUpdate({
-      id: RuleEngine.newId(),
-      selector: css,
-      action: 'move',
-      position: { left: docX, top: docY },
-      createdAt: Date.now()
-    })
-    alert(`Move rule created!\nCSS Selector: ${css}\nXPath: ${xpath ?? 'N/A'}`)
-  }
-  function cleanup(): void {
-    document.removeEventListener('mousemove', onMove, true)
-    document.removeEventListener('click', onDrop, true)
-  }
-  setTimeout(() => {
-    document.addEventListener('mousemove', onMove, true)
-    document.addEventListener('click', onDrop, true)
-  }, 0)
-}

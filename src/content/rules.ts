@@ -103,6 +103,27 @@ export class RuleEngine {
     await saveSiteConfig(config)
   }
 
+  /** Removes every rule (move/hide) that targets any of the given selectors. */
+  static async removeForSelectors(selectors: string[]): Promise<number> {
+    if (selectors.length === 0) return 0
+    const config = await getSiteConfig(location.origin)
+    const removed = config.rules.filter((r) => selectors.includes(r.selector))
+    for (const rule of removed) clearRuleStyles(rule)
+    config.rules = config.rules.filter((r) => !selectors.includes(r.selector))
+    await saveSiteConfig(config)
+    return removed.length
+  }
+
+  /** Clears every `move` rule, restoring all moved elements to their originals. */
+  static async resetAllMoves(): Promise<number> {
+    const config = await getSiteConfig(location.origin)
+    const moved = config.rules.filter((r) => r.action === 'move')
+    for (const rule of moved) clearRuleStyles(rule)
+    config.rules = config.rules.filter((r) => r.action !== 'move')
+    await saveSiteConfig(config)
+    return moved.length
+  }
+
   static newId(): string {
     return uid()
   }

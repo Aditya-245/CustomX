@@ -47,6 +47,8 @@ export interface UiStyle {
   /** Root font-size percentage, e.g. 120 */
   fontSize?: number
   darkMode?: boolean
+  /** When true, any element can be dragged/persisted directly without edit mode. */
+  dragAnywhere?: boolean
   /** Raw CSS injected locally on this site */
   customCss?: string
 }
