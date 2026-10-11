@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "CustomX",
+  "version": "0.1.0",
+  "description": "Customize any website: drag & drop buttons anywhere, hide clutter, and create one-click deep-action shortcuts.",
+  "permissions": ["storage", "tabs", "scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "CustomX",
+    "default_popup": "src/popup/index.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

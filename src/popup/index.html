@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      body {
+        width: 300px;
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: #1e1e2e;
+        color: #cdd6f4;
+        font-size: 13px;
+      }
+      header {
+        padding: 12px 14px 8px;
+        border-bottom: 1px solid #313244;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 15px;
+      }
+      header .origin {
+        color: #a6adc8;
+        font-size: 11px;
+        word-break: break-all;
+      }
+      main {
+        padding: 10px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      button {
+        background: #313244;
+        color: #cdd6f4;
+        border: none;
+        border-radius: 6px;
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 12px;
+        font-family: inherit;
+      }
+      button:hover {
+        background: #45475a;
+      }
+      button.primary {
+        background: #6c5ce7;
+        font-weight: 600;
+      }
+      button.primary:hover {
+        background: #7d6ff0;
+      }
+      button.danger {
+        color: #f38ba8;
+      }
+      .empty {
+        color: #6c7086;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>CustomX</h1>
+      <div class="origin" id="origin">…</div>
+    </header>
+    <main>
+      <!-- Buttons will be inserted by popup.js -->
+    </main>
+    <script type="module" src="./popup.ts"></script>
+  </body>
+</html>
